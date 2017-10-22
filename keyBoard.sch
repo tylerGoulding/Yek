@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="25" unitdist="mil" unit="mil" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -6840,6 +6840,10 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="R10" gate="G$1" pin="1"/>
 <wire x1="-121.92" y1="-46.99" x2="-121.92" y2="-52.07" width="0.1524" layer="91"/>
 <label x="-114.3" y="-52.07" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="PD5(XCK/CTS)"/>
+<wire x1="226.06" y1="-93.98" x2="233.68" y2="-93.98" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="CTR" class="0">
