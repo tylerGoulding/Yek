@@ -3,13 +3,11 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.text.NumberFormat;
-import java.util.Arrays;
 
+@SuppressWarnings("serial")
 public class Yek extends JFrame {
 	public static void main(String args[]){
 		Yek gui = new Yek();
-		gui.pack();
 		gui.setVisible(true);
 	}
 	
@@ -43,7 +41,6 @@ public class Yek extends JFrame {
 	
 	public Yek () {
 		super("Yek");
-		//setSize(1000,700);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		logic = new YekSerial();
 		portName = "";
@@ -54,6 +51,14 @@ public class Yek extends JFrame {
 		createDelFingerprint();
 		createAddAcc();
 		createDelAcc();
+		this.pack();
+	}
+	
+	private void setDefaultLabels() {
+		addLabel.setText(" ");
+		delLabel.setText(" ");
+		addAccLabel.setText("Enter Account Information");
+		delAccLabel.setText("Enter Account Type to Delete");
 	}
 	
 	private void createDelAcc() {
@@ -63,6 +68,7 @@ public class Yek extends JFrame {
 		ActionListener delAccListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				setDefaultLabels();
 				if (portName == "") {
 					//dont even do it
 					delAccLabel.setText("Error! No Serial Port selected!");
@@ -116,6 +122,7 @@ public class Yek extends JFrame {
 		ActionListener addAccListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				setDefaultLabels();
 				if (portName == "") {
 					//dont even do it
 					addAccLabel.setText("Error! No Serial Port selected!");
@@ -196,19 +203,14 @@ public class Yek extends JFrame {
 		ActionListener delActionListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				setDefaultLabels();
 				if (portName == "") {
 					//dont even do it
 					delLabel.setText("Error! No Serial Port selected!");
 					return;
 				}
-				int i = 0;
-				int result = logic.delete_user();
-				if (result == 0) {
-					delLabel.setText("Success!");
-				}
-				else {
-					delLabel.setText(String.format("Error %d", result));
-				}
+				logic.delete_user();
+				delLabel.setText("All Fingerprints Deleted!");
 				return;
 			}			
 		};
@@ -245,21 +247,14 @@ public class Yek extends JFrame {
 		ActionListener addActionListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				setDefaultLabels();
 				if (portName == "") {
 					//dont even do it
 					addLabel.setText("Error! No Serial Port selected!");
 					return;
 				}
-				int result = logic.register_user();
-				if (result == 0) {
-					addLabel.setText("Success!");
-				}
-				else if (result == 49) {
-					addLabel.setText("Error: Max fingerprint capacity reached");
-				}
-				else {
-					addLabel.setText(String.format("Error %d", result));
-				}
+				logic.register_user();
+				addLabel.setText("New Fingerprint Added!");
 				return;
 			}			
 		};
@@ -305,6 +300,7 @@ public class Yek extends JFrame {
 		ActionListener refreshActionListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				setDefaultLabels();
 				logic.refresh();
 				ports.removeAllItems();
 				for (String s : logic.ports) {
