@@ -23,12 +23,10 @@ public class Yek extends JFrame {
 	//fingerprint addition stuff
 	private JPanel addFingerPanel;
 	private JLabel addLabel;
-	private JFormattedTextField fingerId;
 	
 	//fingerprint deletion stuff
 	private JPanel delFingerPanel;
 	private JLabel delLabel;
-	private JFormattedTextField delFingerId;
 	
 	//stuff for adding accounts
 	private JPanel addAccPanel;
@@ -36,6 +34,7 @@ public class Yek extends JFrame {
 	private JTextField addAccUser;
 	private JPasswordField addAccPw;
 	private JLabel addAccLabel;
+	private JCheckBox gmailCheck;
 	
 	//stuff for deleting accounts
 	private JPanel delAccPanel;
@@ -60,7 +59,7 @@ public class Yek extends JFrame {
 	private void createDelAcc() {
 		delAccName = new JTextField();
 		JButton delAccButton = new JButton("Delete Account");
-		delAccLabel = new JLabel("");
+		delAccLabel = new JLabel("Enter Account Type to Delete");
 		ActionListener delAccListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -79,13 +78,8 @@ public class Yek extends JFrame {
 					delAccLabel.setText("Please Enter a valid account name");
 					return;
 				}
-				int result = logic.del_acc(name + "\n");
-				if (result == 0) {
-					delAccLabel.setText(String.format("Account %s deleted", name));
-				}
-				else if (result == 1) {
-					delAccLabel.setText(String.format("Could not locate account %s", name));
-				}
+				logic.del_acc(name);
+				delAccLabel.setText(String.format("Account %s deleted", name));
 			}
 		};
 		delAccButton.addActionListener(delAccListener);
@@ -116,7 +110,8 @@ public class Yek extends JFrame {
 		addAccName = new JTextField();
 		addAccUser = new JTextField();
 		addAccPw = new JPasswordField();
-		addAccLabel = new JLabel("");
+		addAccLabel = new JLabel("Enter Account Information");
+		gmailCheck = new JCheckBox("GSuite or Microsoft Account");
 		JButton addAccButton = new JButton("Add Account");
 		ActionListener addAccListener = new ActionListener() {
 			@Override
@@ -150,13 +145,10 @@ public class Yek extends JFrame {
 					addAccLabel.setText("Please Enter a valid password");
 					return;
 				}
-				int result = logic.add_acc(name+"\n", user+"\n", pw+"\n");
-				if (result == 0) {
-					addAccLabel.setText(String.format("Account %s added", name));
-				}
-				else if (result == 1) {
-					addAccLabel.setText(String.format("Error adding account: %s", name));
-				}
+				String gmail = "0";
+				if (gmailCheck.isSelected()) gmail = "1";
+				logic.add_acc(gmail+name+"+", user+"+", pw+"+");
+				addAccLabel.setText(String.format("Account %s added", name));
 			}
 		};
 		addAccButton.addActionListener(addAccListener);
@@ -175,7 +167,7 @@ public class Yek extends JFrame {
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.CENTER;
 		c.weightx = 0.2;
-		addAccPanel.add(new JLabel("Account Name:"), c);
+		addAccPanel.add(new JLabel("Account Type:"), c);
 		c.gridy = 1;
 		addAccPanel.add(addAccName, c);
 		c.gridy = 2;
@@ -187,9 +179,11 @@ public class Yek extends JFrame {
 		c.gridy = 5;
 		addAccPanel.add(addAccPw, c);
 		c.gridy = 6;
+		addAccPanel.add(gmailCheck, c);
+		c.gridy = 7;
 		c.insets = new Insets(10,5,5,5);
 		addAccPanel.add(addAccButton, c);
-		c.gridy = 7;
+		c.gridy = 8;
 		addAccPanel.add(addAccLabel, c);
 		addAccPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		this.add(addAccPanel);
@@ -197,9 +191,8 @@ public class Yek extends JFrame {
 	
 	private void createDelFingerprint() {
 		//create the text field specifying the fingerprint #
-		delFingerId = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		delLabel = new JLabel("Specify a Fingerprint ID number");
-		JButton del = new JButton("Delete Fingerprint");
+		delLabel = new JLabel(" ");
+		JButton del = new JButton("Delete Fingerprints");
 		ActionListener delActionListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -209,29 +202,19 @@ public class Yek extends JFrame {
 					return;
 				}
 				int i = 0;
-				try {
-					i = Integer.parseInt(delFingerId.getText());
-				} catch (Exception ex) {
-					delLabel.setText("Error: Please enter an integer from 1-20");
-					return;
-				}
-			    
-				int result = logic.delete_user(i);
+				int result = logic.delete_user();
 				if (result == 0) {
 					delLabel.setText("Success!");
 				}
-				else if (result == 1) {
-					delLabel.setText("Error: No fingerprint currently registered for that ID number");
-				}
 				else {
-					delLabel.setText("ERROR!");
+					delLabel.setText(String.format("Error %d", result));
 				}
 				return;
 			}			
 		};
 		del.addActionListener(delActionListener);
 		delFingerPanel = new JPanel(new GridBagLayout());
-		TitledBorder border = new TitledBorder("Delete a Fingerprint");
+		TitledBorder border = new TitledBorder("Delete All Fingerprints");
 		border.setTitleJustification(TitledBorder.LEFT);
 		border.setTitlePosition(TitledBorder.TOP);
 		delFingerPanel.setBorder(border);
@@ -239,15 +222,12 @@ public class Yek extends JFrame {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.ipadx = 100;
 		c.ipady = 10;
-		c.insets = new Insets(5,5,5,40);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.CENTER;
 		c.weightx = 0.2;
-		delFingerPanel.add(delFingerId, c);
 		c.insets = new Insets(5,5,5,5);
 		c.ipadx = 10;
-		c.gridx = 1;
 		delFingerPanel.add(del, c);
 		c.gridx = 0;
 		c.gridy = 1;
@@ -260,8 +240,7 @@ public class Yek extends JFrame {
 	
 	private void createAddFingerprint() {
 		//create the text field specifying the fingerprint #
-		fingerId = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		addLabel = new JLabel("Specify a Fingerprint ID number");
+		addLabel = new JLabel(" ");
 		JButton add = new JButton("Add Fingerprint");
 		ActionListener addActionListener = new ActionListener() {
 			@Override
@@ -271,26 +250,15 @@ public class Yek extends JFrame {
 					addLabel.setText("Error! No Serial Port selected!");
 					return;
 				}
-				int i = 0;
-				try {
-					i = Integer.parseInt(fingerId.getText());
-				} catch (Exception ex) {
-					addLabel.setText("Error: Please enter an integer from 1-20");
-					return;
-				}
-			    
-				int result = logic.register_user(i);
+				int result = logic.register_user();
 				if (result == 0) {
 					addLabel.setText("Success!");
 				}
-				else if (result == 1) {
+				else if (result == 49) {
 					addLabel.setText("Error: Max fingerprint capacity reached");
 				}
-				else if (result == 2) {
-					addLabel.setText("Error: User ID number already in use!");
-				}
 				else {
-					addLabel.setText("ERROR!");
+					addLabel.setText(String.format("Error %d", result));
 				}
 				return;
 			}			
@@ -305,15 +273,12 @@ public class Yek extends JFrame {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.ipadx = 100;
 		c.ipady = 10;
-		c.insets = new Insets(5,5,5,40);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.CENTER;
 		c.weightx = 0.2;
-		addFingerPanel.add(fingerId, c);
 		c.insets = new Insets(5,5,5,5);
 		c.ipadx = 10;
-		c.gridx = 1;
 		addFingerPanel.add(add, c);
 		c.gridx = 0;
 		c.gridy = 1;
@@ -367,6 +332,18 @@ public class Yek extends JFrame {
 		c.ipadx = 10;
 		c.gridx = 1;
 		selectPanel.add(refresh, c);
+		JButton flip = new JButton("Flip Screen");
+		ActionListener flipListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				logic.flipScreen();
+			}
+		};
+		flip.addActionListener(flipListener);
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridwidth = 2;
+		selectPanel.add(flip, c);
 		selectPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		this.add(selectPanel);
 	}
