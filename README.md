@@ -9,7 +9,7 @@ Yek is a prototype of an on-hand password manager that redefines how users inter
 ## Code
 When prototyping, we developed in Arduino then ported it to AVR C. We have included both for your convenience.
 
-##PCB
+## PCB
 The pcb was designed in Eagle. There is one error in the PCB if you are planning to send it out (or printing it in house if that's your slice of pie). The pins on the Battery JST plug are flipped. This is not a major issue but change it if you would like. We did not so that the professors could see our the equivalent PCB we printed.
 ## Computer Application
 The computer application was written in Java and is available as a runnable .jar file that works on Windows, Mac, or Linux, and just requires that Java 8 be installed. The app, uses a library called jSerialComm to communicate with the Yek through a serial port connection.
