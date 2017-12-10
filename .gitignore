@@ -42,5 +42,7 @@ eagle.epf
 
 *.eps
 
+*.png
+*.pdf
 # file locks introduced since 7.x
 *.lck
